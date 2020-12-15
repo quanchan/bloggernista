@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const authRoute = require('./routes/auth')
+const postRoute = require('./routes/posts')
 // Environment variables set up
 const dotenv = require('dotenv')
 dotenv.config()
@@ -24,6 +25,8 @@ app.use(cors())
 
 //Routes Middleware
 app.use('/api/user', authRoute)
+
+app.use('/api/posts', postRoute)
 
 app.get('/', (req, res) => {
     res.send("Hello from server")
