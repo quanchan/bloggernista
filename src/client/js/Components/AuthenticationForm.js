@@ -1,26 +1,44 @@
 import { useState, Fragment } from "react"
+import { useHistory } from "react-router-dom";
 import '../../style/AuthenticationForm.scss'
 const axios = require('axios')
+
 function LoginForm() {
+    const history = useHistory()
     const handleLogin = async (e) => {
         e.preventDefault()
         const username = document.getElementById('username').value
         const password = document.getElementById('password').value
-
-        axios.post(
-            'http://localhost:8082/api/user/login', 
-            {username, password}
-        )
-        .then(userData => userData.data.token)
-        .then(token => { 
+        try {
+            // Login and get user data
+            const userData = await axios.post(
+                'http://localhost:8082/api/user/login', 
+                {username, password}
+            )
+            const token = userData.data.token
+            // const _id = userData.data._id
+            const status = userData.data.status
             window.localStorage.setItem("token", token)
+            // window.localStorage.setItem("_id", _id)
+            window.localStorage.setItem("status", status)
             console.log(token)
-        })
-        // .then(axios.get(
-        //     'http://localhost:8082/api/posts',
 
-        // ))
-        .catch(err => console.log(err))
+            // Redirect to Posts page 
+            const config = {
+                headers: {
+                    "Auth-Token": token,
+                }
+            }
+            const postsData = await axios.get(
+                'http://localhost:8082/api/posts',
+                config
+            )
+            console.log(postsData)
+            history.push(`api/posts/${status}`)
+            
+        } catch(err) {
+            console.error(err)
+        }
         
     }
     return(

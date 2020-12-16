@@ -8,7 +8,8 @@ const postSchema = new Schema({
     },
     author: {
         type: String,
-        required: true
+        required: true,
+        default: "Admin Quan"
     }, 
     body: {
         type: String,
