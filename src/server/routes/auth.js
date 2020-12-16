@@ -39,29 +39,28 @@ router.post('/login', async (req, res) => {
         if (!validPass) return res.status(400).send("Invalid password")
         const token = jwt.sign({
             _id: admin._id,
-            exp: Math.floor(Date.now() / 1000) + (60 * 30)
+            status: "admin"
         }, process.env.TOKEN_SECRET)
-        res.header('Auth-Token', token).send(token) 
+        res.header('Auth-Token', token).send({ _id: admin._id, status: "admin", token: token }) 
     }
     else if (!admin) {
     //Check if user exist
-    const user = await User.findOne({username: req.body.username})
-    if (!user) return res.status(400).send("User does not exist")
+        const user = await User.findOne({username: req.body.username})
+        if (!user) return res.status(400).send("User does not exist")
 
-    //Check if password is valid
-    const validPass = await bcrypt.compare(req.body.password, user.password)
-    if (!validPass) return res.status(400).send("Invalid password")
+        //Check if password is valid
+        const validPass = await bcrypt.compare(req.body.password, user.password)
+        if (!validPass) return res.status(400).send("Invalid password")
 
-    // Create and assign a token
-    const token = jwt.sign({
-        _id: user._id,
-        exp: Math.floor(Date.now() / 1000) + (60 * 30)
-        }, 
-        process.env.TOKEN_SECRET
-    )
-    res.header('Auth-Token', token).send(token)
+        // Create and assign a token
+        const token = jwt.sign({
+            _id: user._id,
+            status: "user"
+            }, 
+            process.env.TOKEN_SECRET
+        )
+        res.header('Auth-Token', token).send({ _id: user._id, status: "user", token: token })
     } 
-        //TODO: check admin/user permission
 
 })
 
