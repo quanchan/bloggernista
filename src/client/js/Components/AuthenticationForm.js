@@ -12,11 +12,14 @@ function LoginForm() {
             {username, password}
         )
         .then(userData => userData.data.token)
-        .then(token => window.localStorage.setItem("token", token))
-        .then(axios.get(
-            'http://localhost:8082/api/posts',
-            
-        ))
+        .then(token => { 
+            window.localStorage.setItem("token", token)
+            console.log(token)
+        })
+        // .then(axios.get(
+        //     'http://localhost:8082/api/posts',
+
+        // ))
         .catch(err => console.log(err))
         
     }
@@ -41,7 +44,7 @@ function SignUpForm() {
             error.innerHTML = "Your passwords do not match"
         }
         axios.post(
-            'http://localhost:8082/api/user/login', 
+            'http://localhost:8082/api/user/signup', 
             {username, password}
         )
         .then(userData => console.log(userData))

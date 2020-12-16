@@ -1,24 +1,27 @@
 const router = require('express').Router()
 const verify = require('./verifyToken')
-router.get('/', verify, (req, res) => {
+const Post = require('../models/Post')
+
+router.get('/', verify, async (req, res) => {
     if (req.user.status === 'admin') {
         // This will be replaced by admin page
-        res.json({
-            posts: 
-                [
-                {
-                    title: 'My first private post',
-                    description: 'Hello World'
-                },
-                {
-                    title: 'My second private post',
-                    description: 'Goodbye World'
-                }
-            ]
-        })
+        try {
+            posts = await Post.find({})
+            res.json(posts)
+        } catch (err) {
+            console.error(err)
+        }
     } else if (req.user.status === 'user') {
         //This will be replaced by specific user page
-        res.send("Access Denied")
+        try {
+            posts = await Post.find({ $or: [
+                {private: false},
+                {permitedViewer: req.user._id}
+            ]})
+            res.json(posts)
+        } catch (err) {
+            console.error(err)
+        }
     }
 })
 
