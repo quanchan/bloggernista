@@ -24,16 +24,6 @@ function LoginForm() {
             console.log(token)
 
             // Redirect to Posts page 
-            const config = {
-                headers: {
-                    "Auth-Token": token,
-                }
-            }
-            const postsData = await axios.get(
-                'http://localhost:8082/api/posts',
-                config
-            )
-            console.log(postsData)
             history.push(`api/posts/${status}`)
             
         } catch(err) {
