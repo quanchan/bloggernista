@@ -1,9 +1,12 @@
 import AdminSidebar from "./AdminSidebar"
 import AdminMainSection from "./AdminMainSection"
 import { useEffect, useState } from "react"
+import '../../style/Admin.scss'
 const axios = require('axios')
 function AdminPage() {
     const [posts, setPosts] = useState([])
+
+
 
     useEffect(() => {
         const fetchPost = async() => {
@@ -22,16 +25,14 @@ function AdminPage() {
             setPosts(prevPosts => [
                 ...prevPosts, ...postsData
             ])
-            console.log("posts", posts)
         }
-
         fetchPost()
     }, [])
     
     return(
         <div className="admin-page page">
             <AdminSidebar posts={posts}/>
-            <AdminMainSection/>        
+            <AdminMainSection posts={posts}/>        
         </div>
     )
 }

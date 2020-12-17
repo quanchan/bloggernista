@@ -4,9 +4,9 @@ function AddPostTool() {
     }
 
     return (
-        <div onClick={openPostEditor} className="AddPostTool">
+        <li onClick={openPostEditor} className="AddPostTool">
             Add Post
-        </div>
+        </li>
     )    
 }
 
