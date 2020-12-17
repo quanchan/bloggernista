@@ -5,7 +5,8 @@ import '../../style/Admin.scss'
 const axios = require('axios')
 function AdminPage() {
     const [posts, setPosts] = useState([])
-
+    const [currId, setCurrId] = useState(0)
+    const [addingPost, setAddingPost] = useState(false)
 
 
     useEffect(() => {
@@ -29,10 +30,17 @@ function AdminPage() {
         fetchPost()
     }, [])
     
+    useEffect(() => {
+            console.log(posts)
+            if(posts.length > 0) {
+                setCurrId(posts[0]._id)
+            }
+    }, [posts])
+
     return(
         <div className="admin-page page">
-            <AdminSidebar posts={posts}/>
-            <AdminMainSection posts={posts}/>        
+            <AdminSidebar posts={posts} currId={currId} setCurrId={setCurrId} setAddingPost={setAddingPost}/>
+            <AdminMainSection posts={posts} currId={currId} addingPost={addingPost} />        
         </div>
     )
 }

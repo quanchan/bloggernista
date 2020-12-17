@@ -1,21 +1,19 @@
 import { useState, useEffect } from 'react'
-
+import AddPostPage from './AddPostPage'
 function AdminMainSection(props) {
     const [posts, setPosts] = useState([])
     const [currPost, setCurrPost] = useState([])
-    const [id, setId] = useState(0)
     useEffect(() => {
         setPosts([...props.posts])
-        setId(props.posts[0])
     }, [props]
     )
 
     const renderPost = () => {
         console.log("props", props)
         console.log("All posts", posts)
-        // const targetPost = posts.find(o => o._id === id)
+        console.log("Id to find", props.currId)
+        const targetPost = posts.find(o => o._id === props.currId)
         // targetPost below only for testing purpose
-        const targetPost = posts[0]
         if (targetPost) { 
             setCurrPost(
                 <article className="post-content">
@@ -31,9 +29,15 @@ function AdminMainSection(props) {
 
     useEffect(renderPost, [posts])
     
+    if(props.addingPost === true) {
+        return <AddPostPage/>
+    }
+
     if(currPost) {
         return <section>{currPost}</section>
     }
+    console.log("Are we adding post", props.addingPost)
+
 
     return <p>No posts available</p>
     

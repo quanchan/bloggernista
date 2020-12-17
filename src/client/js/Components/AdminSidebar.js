@@ -4,7 +4,9 @@ function AdminSidebar(props) {
     const [posts, setPosts] = useState([])
 
     const openPost = (id) => {
-        // TODO: Do something to open the post with that id
+        console.log("Clicked ", id)
+        props.setCurrId(id)
+        props.setAddingPost(false)
     }
 
     const generatePost = () => {
@@ -13,7 +15,7 @@ function AdminSidebar(props) {
                 <li 
                     key={post._id}
                     className="post-title"
-                    onClick={openPost(post._id)}
+                    onClick={() => {openPost(post._id)}}
                 >
                     {post.title}
                 </li>
@@ -22,12 +24,12 @@ function AdminSidebar(props) {
         setPosts(editedPosts)
     }
 
-    useEffect(generatePost, [props])
+    useEffect(generatePost, [props.posts])
 
     return (
         <div className = "admin-sidebar">
             <ul className="post-list">
-                <AddPostTool/>
+                <AddPostTool setAddingPost={props.setAddingPost}/>
                 {posts}
             </ul>
         </div>

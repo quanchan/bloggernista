@@ -6,6 +6,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const authRoute = require('./routes/auth')
 const postRoute = require('./routes/posts')
+const usersRoute = require('./routes/users')
 // Environment variables set up
 const dotenv = require('dotenv')
 dotenv.config()
@@ -27,6 +28,8 @@ app.use(cors())
 app.use('/api/user', authRoute)
 
 app.use('/api/posts', postRoute)
+
+app.use('/api/users', usersRoute)
 
 app.get('/', (req, res) => {
     res.send("Hello from server")

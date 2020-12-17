@@ -1,6 +1,8 @@
-function AddPostTool() {
+
+function AddPostTool(props) {
     const openPostEditor = () => {
-        // TODO: Set global state so that AdminMainSection change
+        props.setAddingPost(true)
+        console.log("Clicked AddPost")
     }
 
     return (

@@ -1,0 +1,13 @@
+.user-sidebar {
+    background-color: dodgerblue;
+    color: white;
+    
+    li {
+        padding: 10px;
+        border-bottom: 1px solid white;
+        &:hover {
+            background-color: rgb(115, 185, 255);
+            cursor: pointer;
+        }
+    }
+}

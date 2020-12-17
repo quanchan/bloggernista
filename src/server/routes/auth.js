@@ -24,9 +24,18 @@ router.post('/register', async (req, res) => {
     })
     try {
         const saveUser = await user.save() 
+        const createdUser = await User.findOne({username: req.body.username})
         console.log("Successful saved user")
-        res.send({ user: user._id })
+        const token = jwt.sign({
+            _id: createdUser._id,
+            status: "user"
+            }, 
+            process.env.TOKEN_SECRET
+        )
+        res.header('Auth-Token', token).send({ _id: createdUser._id, status: "user", token: token })
+
     } catch(err) {
+        console.log(err)
         res.status(400).send(err)
     }
 })

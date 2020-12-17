@@ -1,5 +1,5 @@
 import { useState, Fragment } from "react"
-import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom"
 import '../../style/AuthenticationForm.scss'
 const axios = require('axios')
 
@@ -21,7 +21,6 @@ function LoginForm() {
             window.localStorage.setItem("token", token)
             // window.localStorage.setItem("_id", _id)
             window.localStorage.setItem("status", status)
-            console.log(token)
 
             // Redirect to Posts page 
             history.push(`api/posts/${status}`)
@@ -42,6 +41,7 @@ function LoginForm() {
 }
 
 function SignUpForm() {
+    const history = useHistory()
     const handleSignUp = async (e) => {
         e.preventDefault()
         const username = document.getElementById('username').value
@@ -51,12 +51,22 @@ function SignUpForm() {
         if (password !== confirmPassword) {
             error.innerHTML = "Your passwords do not match"
         }
-        axios.post(
-            'http://localhost:8082/api/user/signup', 
-            {username, password}
-        )
-        .then(userData => console.log(userData))
-        .catch(err => console.err(err))
+        try {
+            const userData = await axios.post(
+                'http://localhost:8082/api/user/register', 
+                {username, password}
+            )
+            const token = userData.data.token
+            // const _id = userData.data._id
+            const status = userData.data.status
+            window.localStorage.setItem("token", token)
+            // window.localStorage.setItem("_id", _id)
+            window.localStorage.setItem("status", status) 
+            history.push(`api/posts/${status}`)
+
+        } catch(err) {
+            console.error(err)
+        }
     }
     return(
         <form>
@@ -84,18 +94,18 @@ function AuthenticationForm() {
         return( 
         <>
             <LoginForm />
-            <a onClick={() => setIsLoginScreen(!isLoginScreen)}>
+            <div className="link" onClick={() => setIsLoginScreen(!isLoginScreen)}>
                 Haven't got an account? Sign up!
-            </a>
+            </div>
         </>
         )
     } 
     return (
         <>
             <SignUpForm />
-            <a onClick={() => setIsLoginScreen(!isLoginScreen)}>
+            <div className="link" onClick={() => setIsLoginScreen(!isLoginScreen)}>
                Already got an account? Login!
-            </a>
+            </div>
         </>
         )
 }
