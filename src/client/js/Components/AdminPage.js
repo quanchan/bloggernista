@@ -3,7 +3,7 @@ import AdminMainSection from "./AdminMainSection"
 import { useEffect, useState } from "react"
 const axios = require('axios')
 function AdminPage() {
-    const [posts, setPosts] = useState()
+    const [posts, setPosts] = useState([])
 
     useEffect(() => {
         const fetchPost = async() => {
@@ -17,9 +17,12 @@ function AdminPage() {
                 'http://localhost:8082/api/posts',
                 config
             )
+             
             postsData = postsData.data
-            console.log(postsData)
-            setPosts(postsData)
+            setPosts(prevPosts => [
+                ...prevPosts, ...postsData
+            ])
+            console.log("posts", posts)
         }
 
         fetchPost()
