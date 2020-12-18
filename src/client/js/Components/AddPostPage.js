@@ -4,6 +4,9 @@ function AddPostPage() {
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
     const [visibility, setVisibility] = useState('public')
+    const [users, setUsers] = useState([])
+    const [permitedViewer, setPermitedViewer] = useState([])
+    const [availViewer, setAvailViewer] = useState([])
     const handleVisibilityChange = (e) => {
         setVisibility(e.target.id)
     }
@@ -25,10 +28,17 @@ function AddPostPage() {
         () => {
             const fetchUsers = async() => {
                 try {
+                    const token = localStorage.getItem("token")
+                    const config = {
+                        headers: {
+                            "Auth-Token": token,
+                        }
+                    }
                     const usersData = await axios.get(
-                        'http://localhost:8082/api/users'
+                        'http://localhost:8082/api/users',
+                        config
                     )
-                    // TODO: do something with the users data
+                    setUsers(usersData.data)
                 } catch (err) {
                     console.error(err)
                 }
@@ -36,8 +46,10 @@ function AddPostPage() {
             fetchUsers()
         },
     [])
-
-    const permitedViewer = (visibility === "public") ? '' : <viewerPicker users={}/>
+    useEffect(() => { 
+        const viewer = (visibility === "public") ? '' : <ViewerPicker users={users} setPermitedViewer={setPermitedViewer} permitedViewer={permitedViewer}/>
+        setAvailViewer(viewer)
+    }, [visibility, permitedViewer])
 
     return (
         <section className='add-post-page'>
@@ -50,20 +62,55 @@ function AddPostPage() {
                 <label htmlFor="public">Public</label>
                 <input type="radio" checked={'private' === visibility} id="private" onChange={handleVisibilityChange} name="visibility" value="private"/>
                 <label htmlFor="private">Private</label>
+                {availViewer}
                 <input type="submit" onClick={handleSubmit} value="Create New Post"></input>
-                {permitedViewer}
             </form>
         </section>
     )    
 }
+function ViewerPicker (props) {
+    useEffect(() => {
+        console.log("permitedViewer", props.permitedViewer)
+    },[props.permitedViewer])
 
-function viewerPicker (props) {
     return (
-        <>
+        <>  
+            <br/>
             <label htmlFor="permited-viewer">Choose who can view this post:</label>
-            <select name="permited-viewer" id="permited-viewer">
-                {props.users}
+            <select 
+                name="pick-permited-viewer" 
+                id="pick-permited-viewer"
+                onChange={(e) => {
+                    const splittedArr = e.target.value.split(' ')
+                    const user = {
+                        username: splittedArr[0],
+                        _id: splittedArr[1]
+                    }
+                    console.log("permitedViewer", props.permitedViewer)
+                    console.log(props.permitedViewer.some(viewer => viewer.username === user.username))
+                    if (!props.permitedViewer.some(viewer => viewer.username === user.username)) {
+                        props.setPermitedViewer(prevViewer => [
+                            ...prevViewer, user
+                        ])
+                    }
+                }}
+
+            > 
+                {props.users.map(user => {
+                    return (
+                        <option  
+                            value={`${user.username} ${user._id}`}
+                        >
+                            {user.username}
+                        </option>
+                    )
+                })}
             </select>
+            <div id="permited-viewer">
+                {props.permitedViewer.map(user => {
+                    return <span>{user.username} </span>
+                })}
+            </div>
         </>
     )
 }

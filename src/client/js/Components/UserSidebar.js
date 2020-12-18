@@ -4,7 +4,6 @@ function UserSidebar(props) {
     const [posts, setPosts] = useState([])
 
     const openPost = (id) => {
-        console.log("Clicked ", id)
         props.setCurrId(id)
     }
 

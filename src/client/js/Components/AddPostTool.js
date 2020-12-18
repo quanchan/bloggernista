@@ -2,7 +2,6 @@
 function AddPostTool(props) {
     const openPostEditor = () => {
         props.setAddingPost(true)
-        console.log("Clicked AddPost")
     }
 
     return (
