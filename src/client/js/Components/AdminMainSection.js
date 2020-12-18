@@ -9,9 +9,6 @@ function AdminMainSection(props) {
     )
 
     const renderPost = () => {
-        console.log("props", props)
-        console.log("All posts", posts)
-        console.log("Id to find", props.currId)
         const targetPost = posts.find(o => o._id === props.currId)
         // targetPost below only for testing purpose
         if (targetPost) { 
@@ -22,7 +19,6 @@ function AdminMainSection(props) {
                     <p>{targetPost.body}</p>
                 </article>
             )
-            console.log("targetPost", targetPost)
 
         } 
     }

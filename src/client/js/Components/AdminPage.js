@@ -31,7 +31,6 @@ function AdminPage() {
     }, [])
     
     useEffect(() => {
-            console.log(posts)
             if(posts.length > 0) {
                 setCurrId(posts[0]._id)
             }

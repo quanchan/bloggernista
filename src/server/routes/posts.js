@@ -15,7 +15,7 @@ router.get('/', verify, async (req, res) => {
         //This will be replaced by specific user page
         try {
             posts = await Post.find({ $or: [
-                {private: false},
+                {isPrivate: false},
                 {permitedViewer: req.user._id}
             ]})
             res.json(posts)
@@ -25,4 +25,33 @@ router.get('/', verify, async (req, res) => {
     }
 })
 
+router.post('/', verify, async (req, res) => {
+    if (req.user.status === 'admin') {
+        const {title, body, isPrivate, permitedViewer} = req.body
+        try {
+            const newPost = new Post({
+                title,
+                body,
+                isPrivate,
+                permitedViewer,
+            })
+            const savePost = await newPost.save()
+            console.log("Post saved successfully")
+            res.status(201)
+        } catch(err) {
+            console.log("Cannot save post")
+            console.log(err)
+            res.status(400).send(err)
+        }
+    }
+})
+
+router.delete('/:id', verify, async (req, res) => {
+    if (req.user.status === 'admin') {
+        const postId = req.params.id
+        await Post.deleteOne({ _id: postId })
+        console.log("Deleted")
+        res.status(201).send("Deleted")
+    }
+})
 module.exports = router

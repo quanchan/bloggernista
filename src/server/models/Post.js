@@ -15,7 +15,7 @@ const postSchema = new Schema({
         type: String,
         required: true
     },
-    private: {
+    isPrivate: {
         type: Boolean,
         require: true,
         default: false
