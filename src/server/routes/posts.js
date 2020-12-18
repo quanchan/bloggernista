@@ -51,7 +51,21 @@ router.delete('/:id', verify, async (req, res) => {
         const postId = req.params.id
         await Post.deleteOne({ _id: postId })
         console.log("Deleted")
-        res.status(201).send("Deleted")
+        res.status(200).send("Deleted")
+    }
+})
+
+router.put('/:id', verify, async (req, res) => {
+    if (req.user.status === 'admin') {
+        try {
+            const postId = req.params.id
+            const {title, body, isPrivate, permitedViewer} = req.body
+            await Post.updateOne({ _id: postId }, {title, body, isPrivate, permitedViewer})
+            console.log("Updated")
+            res.status(200).send("Updated")
+        } catch (err) {
+            console.log(err)
+        }
     }
 })
 module.exports = router
