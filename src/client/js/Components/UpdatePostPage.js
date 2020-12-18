@@ -107,8 +107,11 @@ function ViewerPicker (props) {
                             ...prevViewer, user
                         ])
                     }
+                    const defaultSelect = document.querySelector("#default-select")
+                    defaultSelect.selected = true
                 }}
             > 
+                <option id="default-select" value="" selected={true} disabled hidden>Choose here</option>
                 {props.users.map(user => {
                     return (
                         <option  
