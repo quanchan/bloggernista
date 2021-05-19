@@ -9,7 +9,8 @@ function UpdatePostPage({post}) {
     const id = post._id
     const [visibility, setVisibility] = useState(v)
     const [users, setUsers] = useState([])
-    const [permitedViewer, setPermitedViewer] = useState(post.permitedViewer)
+    const p = post.permitedViewer
+    const [permitedViewer, setPermitedViewer] = useState(p)
     const [availViewer, setAvailViewer] = useState([])
     // Token
     const token = localStorage.getItem("token")
@@ -33,7 +34,6 @@ function UpdatePostPage({post}) {
     }
     
     const handleSubmit = async () => {
-        console.log("Clicked submit button")
         // TODO: submit data to server and update the current post
         const isPrivate = visibility === 'private'
         const response = await axios.put(
@@ -41,9 +41,8 @@ function UpdatePostPage({post}) {
             {title, body, isPrivate, permitedViewer},
             config
             )
-        console.log(response)
     }
-        
+    
     useEffect(
         () => {
             const fetchUsers = async() => {
@@ -54,7 +53,6 @@ function UpdatePostPage({post}) {
                         config
                     )
                     setUsers(usersData.data)
-                    console.log("users", users)
                 } catch (err) {
                     console.error(err)
                 }
@@ -62,6 +60,14 @@ function UpdatePostPage({post}) {
             fetchUsers()
         },
     [])
+
+    useEffect(() => {
+        if(users.length > 0) {
+            const permited = users.filter(user => permitedViewer.includes(user._id))
+            setPermitedViewer(permited)
+        }
+    }, [users])
+
     useEffect(() => { 
         const viewer = (visibility === "public") ? '' : <ViewerPicker users={users} setPermitedViewer={setPermitedViewer} permitedViewer={permitedViewer}/>
         setAvailViewer(viewer)
@@ -84,10 +90,11 @@ function UpdatePostPage({post}) {
         </section>
     )    
 }
-function ViewerPicker (props) {
+
+
+function ViewerPicker ({users, permitedViewer, setPermitedViewer}) {
     useEffect(() => {
-        console.log("permitedViewer", props.permitedViewer)
-    },[props.permitedViewer])
+    },[])
 
     return (
         <>  
@@ -102,8 +109,8 @@ function ViewerPicker (props) {
                         username: splittedArr[0],
                         _id: splittedArr[1]
                     }
-                    if (!props.permitedViewer.some(viewer => viewer.username === user.username)) {
-                        props.setPermitedViewer(prevViewer => [
+                    if (!permitedViewer.some(viewer => viewer.username === user.username)) {
+                        setPermitedViewer(prevViewer => [
                             ...prevViewer, user
                         ])
                     }
@@ -111,11 +118,12 @@ function ViewerPicker (props) {
                     defaultSelect.selected = true
                 }}
             > 
-                <option id="default-select" value="" selected={true} disabled hidden>Choose here</option>
-                {props.users.map(user => {
+                <option id="default-select" value="" selected disabled hidden>Choose here</option>
+                {users.map(user => {
                     return (
                         <option  
-                            value={`${user.username} ${user._id}`}
+                            value={`${user.username} ${user._id}`} 
+                            key={user._id}
                         >
                             {user.username}
                         </option>
@@ -123,8 +131,8 @@ function ViewerPicker (props) {
                 })}
             </select>
             <div id="permited-viewer">
-                {props.permitedViewer.map(user => {
-                    return <span>{user.username} <DeleteViewer user={user} setPermitedViewer={props.setPermitedViewer}/> </span>
+                {permitedViewer.map(user => {
+                    return <span key={user._id}>{user.username} <DeleteViewer user={user} setPermitedViewer={setPermitedViewer}/> </span>
                 })}
             </div>
         </>

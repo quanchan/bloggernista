@@ -11,7 +11,6 @@ function AdminMainSection(props) {
     )
 
     const toggleUpdatePage = (e) => {
-        console.log("Clicked")
         e.preventDefault()
         setUpdatingPost(prevState => !prevState)
     }
@@ -45,7 +44,6 @@ function AdminMainSection(props) {
     if(currPost) {
         return <section>{currPost}</section>
     }
-    console.log("Are we adding post", props.addingPost)
 
 
     return <p>No posts available</p>

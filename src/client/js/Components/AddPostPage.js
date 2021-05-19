@@ -30,7 +30,6 @@ function AddPostPage() {
     }
 
     const handleSubmit = async () => {
-        console.log("Clicked submit button")
         // TODO: submit data to server and create a new post
         const isPrivate = visibility === 'private'
         const response = await axios.post(
@@ -110,11 +109,12 @@ function ViewerPicker (props) {
                 }}
 
             > 
-                <option id="default-select" value="" selected={true} disabled hidden>Choose here</option>
+                <option id="default-select" value="" selected disabled hidden>Choose here</option>
                 {props.users.map(user => {
                     return (
                         <option  
                             value={`${user.username} ${user._id}`}
+                            key={user._id}
                         >
                             {user.username}
                         </option>
